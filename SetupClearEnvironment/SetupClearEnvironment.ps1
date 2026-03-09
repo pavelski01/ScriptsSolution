@@ -1,3 +1,4 @@
+.\DockerDesktopConditionalLunch.ps1
 $stackName = "azurite-stack"
 $existing = docker compose -p $stackName ps --quiet 2>$null
 if (-not $existing) {
