@@ -7,7 +7,7 @@ function Write-Log {
         "WARNING" { "Yellow" }
         "INFORMATION" { "Green" }
         default { "Cyan" }
-    }
+    }    
 
     if ([string]::IsNullOrEmpty($LogFile)) {
         Write-Host $entry -ForegroundColor $color

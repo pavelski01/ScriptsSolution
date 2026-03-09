@@ -29,7 +29,7 @@ $elapsed = 0
 do {
     Start-Sleep -Seconds 5
     $elapsed += 5
-    Write-Log "Still waiting... ($elapsed s / $timeout s)" $null "INFORMATION"
+    Write-Log "Still waiting... ($elapsed s / $timeout s)" $null "WARNING"
 } while (-not (IsDockerRunning) -and $elapsed -lt $timeout)
 
 if (IsDockerRunning) {

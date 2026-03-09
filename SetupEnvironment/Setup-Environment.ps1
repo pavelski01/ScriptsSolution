@@ -1,8 +1,9 @@
-.\DockerDesktopConditionalLunch.ps1
+. .\Shared-Functions.ps1 
+.\DockerDesktop-Lunch.ps1
 $stackName = "azurite-stack"
 $existing = docker compose -p $stackName ps --quiet 2>$null
 if (-not $existing) {
-	Write-Host "Starting stack '$stackName'" -ForegroundColor Green
+	Write-Log "Starting stack '$stackName'" $null "INFORMATION"
     docker compose -f .\compose.yaml up -d
 }
 .\Delete-Database.ps1 -ServerInstance "(localdb)\mssqllocaldb" -DatabaseName aspnet-53bc9b9d-9d6a-45d4-8429-2a2761773502 -Force
