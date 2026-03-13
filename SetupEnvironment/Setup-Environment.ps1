@@ -15,7 +15,7 @@
     Path to the Entity Framework Core migration project
 
 .EXAMPLE
-    .\Setup-Environment.ps1 -ServerInstance "localhost" -AzureStorageConnectionString "UseDevelopmentStorage=true" -MigrationProjectPath ".\MyProject.Migrations"
+    .\Setup-Environment.ps1 -ServerInstance "localhost" -DatabaseName "MyDatabase" -AzureStorageConnectionString "UseDevelopmentStorage=true" -MigrationProjectPath ".\MyProject.Migrations"
 #>
 
 param (
