@@ -42,4 +42,5 @@ if (-not $existing) {
 .\Delete-AzureStorage.ps1 -ConnectionString $AzureStorageConnectionString -TableName OrleansReminders -Force
 .\Delete-AzureStorage.ps1 -ConnectionString $AzureStorageConnectionString -TableName OrleansGrainState -Force
 .\Delete-AzureStorage.ps1 -ConnectionString $AzureStorageConnectionString -ContainerName grainstate -Force
-dotnet ef database update --project $MigrationProjectPath --startup-project $MigrationProjectPath
+dotnet user-secrets remove "ConnectionStrings:DefaultConnection" --project $MigrationProjectPath
+dotnet ef database update --startup-project $MigrationProjectPath -- "DefaultConnection"
