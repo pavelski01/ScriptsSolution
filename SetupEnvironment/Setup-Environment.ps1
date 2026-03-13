@@ -1,3 +1,34 @@
+<#
+.SYNOPSIS
+    Sets up the local development environment by starting necessary services and cleaning up existing resources.
+
+.PARAMETER ServerInstance
+    The SQL Server instance name (e.g., "localhost" or "SERVER\SQLEXPRESS")
+
+.PARAMETER DatabaseName
+    Name of the database to delete before setup
+
+.PARAMETER AzureStorageConnectionString
+    Azure Storage Account connection string
+
+.PARAMETER MigrationProjectPath
+    Path to the Entity Framework Core migration project
+
+.EXAMPLE
+    .\Setup-Environment.ps1 -ServerInstance "localhost" -AzureStorageConnectionString "UseDevelopmentStorage=true" -MigrationProjectPath ".\MyProject.Migrations"
+#>
+
+param (
+    [string]$ServerInstance = "(localdb)\mssqllocaldb",
+    [string]$AzureStorageConnectionString = "UseDevelopmentStorage=true",
+
+    [Parameter(Mandatory = $true)]
+    [string]$DatabaseName,
+
+    [Parameter(Mandatory = $true)]
+    [string]$MigrationProjectPath
+)
+
 . .\Shared-Functions.ps1 
 .\DockerDesktop-Lunch.ps1
 $stackName = "azurite-stack"
@@ -6,9 +37,9 @@ if (-not $existing) {
 	Write-Log "Starting stack '$stackName'" $null "INFORMATION"
     docker compose -f .\compose.yaml up -d
 }
-.\Delete-Database.ps1 -ServerInstance "(localdb)\mssqllocaldb" -DatabaseName aspnet-53bc9b9d-9d6a-45d4-8429-2a2761773502 -Force
-.\Delete-AzureStorage.ps1 -ConnectionString "UseDevelopmentStorage=true" -TableName OrleansSiloInstances -Force
-.\Delete-AzureStorage.ps1 -ConnectionString "UseDevelopmentStorage=true" -TableName OrleansReminders -Force
-.\Delete-AzureStorage.ps1 -ConnectionString "UseDevelopmentStorage=true" -TableName OrleansGrainState -Force
-.\Delete-AzureStorage.ps1 -ConnectionString "UseDevelopmentStorage=true" -ContainerName grainstate -Force
-dotnet ef database update --project .\GloboTicket\GloboTicket.App\GloboTicket.App.csproj --startup-project .\GloboTicket\GloboTicket.App\GloboTicket.App.csproj
+.\Delete-Database.ps1 -ServerInstance $ServerInstance -DatabaseName $DatabaseName -Force
+.\Delete-AzureStorage.ps1 -ConnectionString $AzureStorageConnectionString -TableName OrleansSiloInstances -Force
+.\Delete-AzureStorage.ps1 -ConnectionString $AzureStorageConnectionString -TableName OrleansReminders -Force
+.\Delete-AzureStorage.ps1 -ConnectionString $AzureStorageConnectionString -TableName OrleansGrainState -Force
+.\Delete-AzureStorage.ps1 -ConnectionString $AzureStorageConnectionString -ContainerName grainstate -Force
+dotnet ef database update --project $MigrationProjectPath --startup-project $MigrationProjectPath
