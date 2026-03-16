@@ -3,27 +3,15 @@ name: azurite-stack
 services:
   azurite:
     container_name: azurite
-    image: mcr.microsoft.com/azure-storage/azurite:3.9.0-table-alpha.1
+    image: mcr.microsoft.com/azure-storage/azurite
     ports:
-      - 10000 # Blob
-      - 10001 # Queue
-      - 10002 # Table
-    command: >
-      azurite
-      --blobHost 0.0.0.0
-      --queueHost 0.0.0.0
-      --tableHost 0.0.0.0
-      --location /data
-      --loose
-      --skipApiVersionCheck
-    volumes:
-      - azurite-data:/data
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
     networks:
       - azurite-network
     restart: unless-stopped
-
-volumes:
-  azurite-data:
+      
 networks:
   azurite-network:
     name: azurite-network
