@@ -35,7 +35,7 @@ $stackName = "azurite-stack"
 $existing = docker compose -p $stackName ps --quiet 2>$null
 if (-not $existing) {
 	Write-Log "Starting stack '$stackName'" $null "INFORMATION"
-    docker compose -f .\compose.yaml up -d
+    docker compose -f .\azurite-compose.yaml up -d
 }
 .\Delete-Database.ps1 -ServerInstance $ServerInstance -DatabaseName $DatabaseName -Force
 .\Delete-AzureStorage.ps1 -ConnectionString $AzureStorageConnectionString -TableName OrleansSiloInstances -Force
