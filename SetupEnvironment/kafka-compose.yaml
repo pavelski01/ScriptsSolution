@@ -118,6 +118,21 @@ services:
       - kafka-network
     restart: unless-stopped
 
+  rpk:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: rpk
+    entrypoint: ["/bin/sh", "-c", "sleep infinity"]
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+    networks:
+      - kafka-network
+    restart: unless-stopped
+
 volumes:
   kafka1-data:
   kafka2-data:
