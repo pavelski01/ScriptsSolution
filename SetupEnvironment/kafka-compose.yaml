@@ -15,6 +15,7 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+      KAFKA_CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
@@ -47,10 +48,13 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+      KAFKA_CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     volumes:
       - kafka2-data:/var/lib/kafka/data
     depends_on:
@@ -80,10 +84,13 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+      KAFKA_CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     volumes:
       - kafka3-data:/var/lib/kafka/data
     healthcheck:
@@ -107,6 +114,7 @@ services:
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:29092,kafka2:29094,kafka3:29096
+      DYNAMIC_CONFIG_ENABLED: "true"
     depends_on:
       kafka1:
         condition: service_healthy
@@ -122,15 +130,14 @@ services:
     image: docker.redpanda.com/redpandadata/redpanda:latest
     container_name: rpk
     entrypoint: ["/bin/sh", "-c", "sleep infinity"]
-    #tls:
-    #  enabled: true
-    #  truststore_file: ./ca.crt
-    ##  cert_file: ./client.crt
-    ##  key_file: ./client.key
-    #sasl:
-    #  user: myuser
-    #  password: mypassword
-    #  type: SCRAM-SHA-512
+    environment:
+      - RPK_BROKERS=kafka1:29092,kafka2:29094,kafka3:29096
+      #- RPK_TLS_ENABLED=true
+      #- RPK_TLS_TRUSTSTORE=/etc/ssl/certs/ca.crt
+      #- RPK_SASL_ENABLED=true
+      #- RPK_SASL_TYPE=SCRAM-SHA-512
+      #- RPK_SASL_USER=myuser
+      #- RPK_SASL_PASSWORD=mypassword
     depends_on:
       kafka1:
         condition: service_healthy
@@ -141,6 +148,10 @@ services:
     networks:
       - kafka-network
     restart: unless-stopped
+    # volumes:
+    #   - ./ca.crt:/etc/ssl/certs/ca.crt
+    #   - ./client.crt:/etc/ssl/certs/client.crt
+    #   - ./client.key:/etc/ssl/private/client.key
 
 volumes:
   kafka1-data:
