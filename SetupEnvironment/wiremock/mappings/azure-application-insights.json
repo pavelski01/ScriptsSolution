@@ -1,0 +1,15 @@
+{
+  "Request": {
+    "Method": "POST",
+    "Path": "/v2/track"
+  },
+  "Response": {
+    "StatusCode": 200,
+    "Headers": { "Content-Type": "application/json" },
+    "BodyAsJson": {
+      "itemsReceived": 1,
+      "itemsAccepted": 1,
+      "errors": []
+    }
+  }
+}

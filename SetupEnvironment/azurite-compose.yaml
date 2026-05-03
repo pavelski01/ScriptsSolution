@@ -12,20 +12,14 @@ services:
       - azurite-network
     restart: unless-stopped
 
-  mockserver:
-    image: mockserver/mockserver:latest
-    container_name: appinsights-mockserver
+  wiremock:
+    image: sheyenrath/wiremock.net:latest
+    container_name: wiremock-net
     ports:
-      - "1080:1080" # HTTP
-      - "1443:1443" # HTTPS
-    environment:
-      MOCKSERVER_SERVER_PORT: 1080
-      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/appinsights-expectations.json
-      MOCKSERVER_MAX_LOG_ENTRIES: 1000
-      MOCKSERVER_ENABLE_CORS_FOR_API: "true"
-      MOCKSERVER_CORS_ALLOW_HEADERS: "Content-Type, x-ms-client-request-id, x-ms-session-id"
+      - "9091:80"
+    command: --ReadStaticMappings true
     volumes:
-      - ./mockserver/config:/config:ro
+      - ./wiremock/mappings:/app/__admin/mappings
     networks:
       - azurite-network
     restart: unless-stopped
